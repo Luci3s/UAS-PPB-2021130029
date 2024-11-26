@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "60250535658",
+    "project_id": "resep-app-231124125",
+    "storage_bucket": "resep-app-231124125.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60250535658:android:65b48ce6aabb339b45c993",
+        "android_client_info": {
+          "package_name": "com.uas_ppb_2021130029.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhtXNB3aHtnXTAMI2oSQJzRz0oVq6p5e0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
