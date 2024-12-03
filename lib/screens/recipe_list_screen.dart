@@ -5,7 +5,9 @@ import 'recipe_detail_screen.dart';
 import '../models/recipe.dart';
 
 class RecipeListScreen extends StatefulWidget {
-  const RecipeListScreen({super.key});
+  final String username; // Tambahkan username sebagai parameter
+
+  const RecipeListScreen({super.key, required this.username});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -23,7 +25,22 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   @override
   void initState() {
     super.initState();
+    _showWelcomeNotification(); // Tampilkan notifikasi "Selamat Datang"
     _loadRecipes();
+  }
+
+  // Notifikasi "Selamat Datang"
+  void _showWelcomeNotification() {
+    Future.delayed(
+      Duration.zero,
+      // ignore: use_build_context_synchronously
+      () => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Selamat Datang, ${widget.username}!'),
+          duration: const Duration(seconds: 3),
+        ),
+      ),
+    );
   }
 
   Future<void> _loadRecipes() async {
@@ -56,7 +73,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       theme: _isDarkMode ? ThemeData.dark() : ThemeData.light(),
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Recipe App'),
+          title: Text('Recipe App - Hello, ${widget.username}!'), // Sapaan di AppBar
           actions: [
             IconButton(
               icon: Icon(_isDarkMode ? Icons.dark_mode : Icons.light_mode),
