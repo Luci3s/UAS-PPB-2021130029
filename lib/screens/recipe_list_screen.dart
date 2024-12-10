@@ -29,14 +29,16 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     _loadRecipes();
   }
 
-  // Notifikasi "Selamat Datang"
   void _showWelcomeNotification() {
     Future.delayed(
       Duration.zero,
       // ignore: use_build_context_synchronously
       () => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Selamat Datang, ${widget.username}!'),
+          content: Text(
+            'Selamat Datang, ${widget.username}!',
+            style: const TextStyle(fontSize: 16.0),
+          ),
           duration: const Duration(seconds: 3),
         ),
       ),
@@ -70,22 +72,25 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
       theme: _isDarkMode ? ThemeData.dark() : ThemeData.light(),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Recipe App - Hello, ${widget.username}!'), // Sapaan di AppBar
+          title: Text('Hello, ${widget.username}!'),
+          backgroundColor: _isDarkMode ? Colors.black : const Color.fromARGB(255, 15, 223, 223),
           actions: [
             IconButton(
               icon: Icon(_isDarkMode ? Icons.dark_mode : Icons.light_mode),
-              onPressed: _toggleTheme, // Toggle dark mode
+              onPressed: _toggleTheme,
             ),
           ],
         ),
         body: _currentIndex == 0
-            ? _buildRecipeList() // Recipe list view
-            : const AddRecipeScreen(), // Add recipe view
+            ? _buildRecipeList()
+            : const AddRecipeScreen(),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
+          selectedItemColor: const Color.fromARGB(255, 14, 224, 196),
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.list),
@@ -113,24 +118,49 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             ? Center(child: Text(_errorMessage!))
             : RefreshIndicator(
                 onRefresh: _loadRecipes,
-                child: ListView.builder(
+                child: GridView.builder(
+                  padding: const EdgeInsets.all(10.0),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10.0,
+                    mainAxisSpacing: 10.0,
+                  ),
                   itemCount: _recipes.length,
                   itemBuilder: (context, index) {
-                    return Card(
-                      margin: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        title: Text(_recipes[index].name),
-                        subtitle:
-                            Text('Difficulty: ${_recipes[index].difficulty}'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  RecipeDetailScreen(recipe: _recipes[index]),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                RecipeDetailScreen(recipe: _recipes[index]),
+                          ),
+                        ).then((_) => _loadRecipes());
+                      },
+                      child: Card(
+                        elevation: 5.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.fastfood, color: Color.fromARGB(255, 8, 164, 211), size: 50),
+                            const SizedBox(height: 10),
+                            Text(
+                              _recipes[index].name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                          ).then((_) => _loadRecipes());
-                        },
+                            const SizedBox(height: 5),
+                            Text(
+                              'Difficulty: ${_recipes[index].difficulty}',
+                              style: const TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },

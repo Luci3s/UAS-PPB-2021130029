@@ -38,7 +38,7 @@ class RecipeDetailScreen extends StatelessWidget {
             const Text('Ingredients:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ...recipe.ingredients.map((ingredient) => Text('- $ingredient')),
-            const SizedBox(height: 10),
+                        const SizedBox(height: 10),
             const Text('Steps:',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ...recipe.steps.map((step) => Text('- $step')),

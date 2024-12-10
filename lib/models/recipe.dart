@@ -17,7 +17,20 @@ class Recipe {
     required this.videoUrl,
   });
 
-  // Convert Recipe object to a Map
+  // fromMap yang benar
+  factory Recipe.fromMap(String id, Map<String, dynamic> data) {
+    return Recipe(
+      id: id,
+      name: data['name'] ?? '',
+      difficulty: data['difficulty'] ?? 'unknown',
+      ingredients: List<String>.from(data['ingredients'] ?? []),
+      steps: List<String>.from(data['steps'] ?? []),
+      imageUrl: data['imageUrl'] ?? '',
+      videoUrl: data['videoUrl'] ?? '',
+    );
+  }
+
+  // Metode toMap untuk mengonversi Recipe ke Map
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -28,18 +41,5 @@ class Recipe {
       'imageUrl': imageUrl,
       'videoUrl': videoUrl,
     };
-  }
-
-  // Create Recipe object from a Map
-  static Recipe fromMap(String id, Map<String, dynamic> map) {
-    return Recipe(
-      id: id,
-      name: map['name'] ?? 'Unknown',
-      difficulty: map['difficulty'] ?? 'Unknown',
-      ingredients: List<String>.from(map['ingredients'] ?? []),
-      steps: List<String>.from(map['steps'] ?? []),
-      imageUrl: map['imageUrl'] ?? '',
-      videoUrl: map['videoUrl'] ?? '',
-    );
   }
 }

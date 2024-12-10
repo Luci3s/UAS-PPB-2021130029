@@ -2,15 +2,16 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:io';
-import '../models/recipe.dart'; // Pastikan path ini sudah sesuai dengan lokasi model Recipe Anda
+import '../models/recipe.dart';
 
 class FirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
 
   // Metode login
   Future<void> login(String email, String password) async {
@@ -35,40 +36,47 @@ class FirebaseService {
     }
   }
 
-  // Menambahkan resep ke Firestore
   Future<void> addRecipe(Map<String, dynamic> recipeData) async {
     try {
+      // Cek apakah data yang diterima valid
+      if (kDebugMode) {
+        print('Menyimpan resep dengan data: $recipeData');
+      }
+      
+      // Menyimpan resep ke Firestore
       await _firestore.collection('recipes').add(recipeData);
+      if (kDebugMode) {
+        print('Resep berhasil disimpan!');
+      }
     } catch (e) {
-      throw 'Failed to add recipe.';
+      if (kDebugMode) {
+        print('Error menyimpan resep: $e');
+      }
+      throw Exception('Gagal menambahkan resep');
     }
   }
 
   // Mengunggah gambar ke Firebase Storage
   Future<String> uploadImage(File imageFile) async {
+    if (!imageFile.existsSync()) {
+      throw 'Image file does not exist.';
+    }
     try {
       String fileName = 'images/${DateTime.now().millisecondsSinceEpoch}.png';
       TaskSnapshot snapshot = await _storage.ref(fileName).putFile(imageFile);
       String downloadUrl = await snapshot.ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      throw 'Failed to upload image.';
+      throw 'Failed to upload image: $e';
     }
   }
 
-
-
-  // Mendapatkan daftar resep dari Firestore
   Future<List<Recipe>> getRecipes() async {
-    try {
-      QuerySnapshot snapshot = await _firestore.collection('recipes').get();
-      List<Recipe> recipes = snapshot.docs.map((doc) {
-        var data = doc.data() as Map<String, dynamic>;
-        return Recipe.fromMap(doc.id, data);
-      }).toList();
-      return recipes;
-    } catch (e) {
-      throw 'Failed to fetch recipes.';
-    }
-  }
+  final snapshot = await _firestore.collection('recipes').get();
+  return snapshot.docs.map((doc) {
+    final data = doc.data();
+    return Recipe.fromMap(doc.id, data); // Perbaiki argumen
+  }).toList();
+}
+
 }
