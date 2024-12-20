@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'recipe_list_screen.dart';
 import 'register_screen.dart';
 
@@ -44,14 +43,15 @@ class _LoginScreenState extends State<LoginScreen> {
       if (user != null) {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Selamat Datang, ${user.displayName ?? 'User'}!')),
+          SnackBar(content: Text('Welcome, ${user.displayName ?? 'User'}!')),
         );
 
         Navigator.pushReplacement(
           // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(
-            builder: (context) => RecipeListScreen(username: user.displayName ?? 'User'),
+            builder: (context) =>
+                RecipeListScreen(username: user.displayName ?? 'User'),
           ),
         );
       }
@@ -145,7 +145,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterScreen()),
                       );
                     },
                     child: const Text(

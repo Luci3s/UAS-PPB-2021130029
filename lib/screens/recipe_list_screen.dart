@@ -5,7 +5,7 @@ import 'recipe_detail_screen.dart';
 import '../models/recipe.dart';
 
 class RecipeListScreen extends StatefulWidget {
-  final String username; // Tambahkan username sebagai parameter
+  final String username;
 
   const RecipeListScreen({super.key, required this.username});
 
@@ -19,32 +19,16 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   List<Recipe> _recipes = [];
   bool _isLoading = true;
   String? _errorMessage;
-  bool _isDarkMode = false; // Default light mode
-  int _currentIndex = 0; // Default tab index for BottomNavigationBar
+  bool _isDarkMode = false;
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _showWelcomeNotification(); // Tampilkan notifikasi "Selamat Datang"
     _loadRecipes();
   }
 
-  void _showWelcomeNotification() {
-    Future.delayed(
-      Duration.zero,
-      // ignore: use_build_context_synchronously
-      () => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Selamat Datang, ${widget.username}!',
-            style: const TextStyle(fontSize: 16.0),
-          ),
-          duration: const Duration(seconds: 3),
-        ),
-      ),
-    );
-  }
-
+  // Fungsi untuk memuat data resep
   Future<void> _loadRecipes() async {
     try {
       setState(() {
@@ -56,6 +40,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       setState(() {
         _errorMessage = 'Failed to load recipes. Please try again later.';
       });
+      // ignore: avoid_print
+      print("Error: $e"); // Log error untuk debugging
     } finally {
       setState(() {
         _isLoading = false;
@@ -63,6 +49,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     }
   }
 
+  // Fungsi untuk mengubah mode tema (light/dark)
   void _toggleTheme() {
     setState(() {
       _isDarkMode = !_isDarkMode;
@@ -72,7 +59,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
       theme: _isDarkMode ? ThemeData.dark() : ThemeData.light(),
       home: Scaffold(
         appBar: AppBar(
@@ -87,7 +73,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         ),
         body: _currentIndex == 0
             ? _buildRecipeList()
-            : const AddRecipeScreen(),
+            : AddRecipeScreen(username: widget.username), // Diberikan parameter username
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _currentIndex,
           selectedItemColor: const Color.fromARGB(255, 14, 224, 196),
@@ -111,6 +97,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     );
   }
 
+  // Widget untuk menampilkan daftar resep
   Widget _buildRecipeList() {
     return _isLoading
         ? const Center(child: CircularProgressIndicator())
@@ -135,7 +122,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                             builder: (context) =>
                                 RecipeDetailScreen(recipe: _recipes[index]),
                           ),
-                        ).then((_) => _loadRecipes());
+                        ).then((_) => _loadRecipes()); // Memuat ulang resep setelah kembali
                       },
                       child: Card(
                         elevation: 5.0,

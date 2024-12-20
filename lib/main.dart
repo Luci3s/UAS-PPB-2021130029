@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:uas_ppb_2021130029/screens/login_screen.dart';
-
-// ignore: depend_on_referenced_packages
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -10,9 +8,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
-  // await seedRecipesToFirestore(sampleRecipes);
-  
+
   runApp(const MyApp());
 }
 
